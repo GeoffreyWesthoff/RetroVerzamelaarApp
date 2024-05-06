@@ -1,0 +1,32 @@
+<div class="container">
+    <h1 class="mx-auto">Companies <a [routerLink]="['/company', 'create']" *ngIf="this.authService.isAdmin()" class="btn btn-primary">Create New</a></h1>
+    <label for="search" class="form-label">Search</label>
+    <input class="form-control" name="search" #searchBox type="text" (input)="search()" placeholder="Call of Duty">
+  </div>
+  
+  
+  <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Release Date</th>
+        <th *ngIf="this.authService.isUserLoggedIn()" scope="col">Options</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let company of companies">
+        <td><a [routerLink]="['/company', company.id]">{{company.name}}</a></td>
+        <td>{{company.establishment_year}}</td>
+        <td *ngIf="this.authService.isUserLoggedIn()">
+          <div *ngIf="this.authService.isAdmin()">
+            <button type="button" class="btn btn-danger me-2" title="delete console"
+                    (click)="delete(company)">Delete</button>
+          
+          
+            <a [routerLink]="['/company', company.id, 'edit']" type="button" class="btn btn-warning">Edit</a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    

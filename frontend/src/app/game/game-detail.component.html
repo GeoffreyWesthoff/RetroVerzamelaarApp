@@ -1,0 +1,52 @@
+<div class="container">
+    <div class="row align-items-start justify-content-center mx-4">
+        <div class="col mx-auto">
+            <h2 class="m-4">Game</h2>
+            <div class="card m-4" style="max-width: 480px;">
+                <img class="card-img-top img-fluid" src="{{ game.image_url }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ game.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary"></h6>
+                    <h6 class="card-subitle mb-2 text-body-secondary fw-bold">{{ game.rating }} / 10</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Genre: {{ game.genre }}</li>
+                        <li class="list-group-item">Market Price: ${{ game.market_price}}</li>
+                        <li class="list-group-item">Game Region: {{ game.region }}</li>
+                        <li class="list-group-item">Maximum Players Supported: {{ game.max_players }}</li>
+                        <li class="list-group-item">Online Multiplayer Support: {{ game.online_support == 'true' ? "Yes" : "No" }} </li>
+                        <a (click)="open(game)" type="button" class="btn btn-primary">Collect</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col mx-auto">
+            <h2 class="m-4">Developer</h2>
+            <div *ngFor="let company of companies" class="card m-4" style="max-width: 240px;">
+                <img class="card-img-top img-fluid" src="{{ company.image_url }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ company.name }}</h5>
+                        <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Country: {{company.country }}</li>
+                    </ul>
+                    <div class="card-body">
+                        <a [routerLink]="['/company', company.id]" class="card-link btn btn-primary">View Details</a>
+                      </div>
+                </div>
+            </div>
+        </div>
+        <div class="col mx-auto">
+            <h2 class="m-4">Released On</h2>
+            <div *ngFor="let c of consoles" class="card m-4" style="max-width: 240px;">
+                <img class="card-img-top img-fluid" src="{{ c.image_url }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ c.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <a [routerLink]="['/console', c.id]" class="card-link btn btn-primary">View Details</a>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-collect-modal #collectModal></app-collect-modal>
+    

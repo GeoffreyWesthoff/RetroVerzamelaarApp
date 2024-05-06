@@ -1,0 +1,36 @@
+<div class="container">
+  <h1 class="mx-auto">Games <a [routerLink]="['/game', 'create']" *ngIf="this.authService.isAdmin()" class="btn btn-primary">Create New</a></h1>
+  <label for="search" class="form-label">Search</label>
+  <input class="form-control" name="search" #searchBox type="text" (input)="search()" placeholder="Call of Duty">
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Release Date</th>
+      <th *ngIf="this.authService.isUserLoggedIn()" scope="col">Options</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let game of games">
+      <td><a [routerLink]="['/game', game.id]">{{game.name}}</a></td>
+      <td>{{game.release_date}}</td>
+      <td *ngIf="this.authService.isUserLoggedIn()">
+        <div *ngIf="this.authService.isAdmin()">
+          <button type="button" class="btn btn-danger me-2" title="delete console"
+                  (click)="delete(game)">Delete</button>
+        
+        
+          <a [routerLink]="['/game', game.id, 'edit']" type="button" class="btn btn-warning">Edit</a>
+        </div>
+      
+        <a (click)="open(game)" type="button" class="btn btn-primary">Collect</a>
+      
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  
+<app-collect-modal #collectModal></app-collect-modal>

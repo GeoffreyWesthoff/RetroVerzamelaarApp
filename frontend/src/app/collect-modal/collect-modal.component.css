@@ -1,0 +1,8 @@
+.modal {
+    background-color: rgba(200, 200, 200, 0.8);
+}
+
+.invalid {
+    color: red;
+    font-size: small;;
+}

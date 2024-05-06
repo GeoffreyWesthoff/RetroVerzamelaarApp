@@ -1,0 +1,52 @@
+<form [formGroup]="consoleForm" (ngSubmit)="onClickSubmit()">
+  <div class="form-group">
+    <label for="consoleName">Name</label>
+    <input class="form-control" type="text" id="consoleName" name="name" formControlName="name" ngModel>
+    <div class="invalid" [hidden]="consoleForm.get('name')?.pristine || consoleForm.get('name')?.valid">
+      A name is required
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="consoleReleaseDate">Release Date</label>
+    <div class="input-group">
+      <input class="form-control" type="date" name="release_date" id="consoleReleaseDate" formControlName="release_date" ngModel>
+      <div class="invalid" [hidden]="consoleForm.get('release_date')?.pristine || consoleForm.get('release_date')?.valid">
+        A valid date must be selected
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="consoleMarketPrice">Market Price</label>
+    <input class="form-control" type="number" id="consoleMarketPrice" name="market_price" formControlName="market_price" ngModel>
+    <div class="invalid" [hidden]="consoleForm.get('market_price')?.pristine || consoleForm.get('market_price')?.valid">
+      A market price is required
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="consoleImageUrl">Image URL</label>
+    <input class="form-control" type="text" id="consoleImageUrl" name="image_url" formControlName="image_url" ngModel>
+    <div class="invalid" [hidden]="consoleForm.get('image_url')?.pristine || consoleForm.get('image_url')?.valid">
+      A valid URL must be submitted
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="consoleMaxControllers">Max Controllers</label>
+    <input class="form-control" type="number" id="consoleMaxControllers" min="1" max="16" name="max_controllers" formControlName="max_controllers" ngModel>
+    <div class="invalid" [hidden]="consoleForm.get('max_controllers')?.pristine || consoleForm.get('max_controllers')?.valid">
+      A valid number between 1 and 16 must be entered
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="consoleOnlineCapable">Online Capable</label>
+    <input class="form-control" type="text" id="consoleOnlineCapable" formControlName="online_capable" name="online_capable" ngModel>
+    <div class="invalid" [hidden]="consoleForm.get('online_capable')?.pristine || consoleForm.get('online_capable')?.valid">
+      A value of either true or false must be entered
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

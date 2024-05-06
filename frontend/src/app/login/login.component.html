@@ -1,0 +1,25 @@
+<div class="container mx-auto d-flex flex-col justify-content-center align-items-center">
+    <div>
+        <h1>Login</h1>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="form-group m-2">
+                <label class="" for="username">Username</label>
+                <input class="form-control" type="text" placeholder="Username" formControlName="username">
+                <div [hidden]="loginForm.get('username')?.valid || loginForm.get('username')?.pristine" class="invalid">
+                    A username is required
+                </div>
+            </div>
+            <div class="form-group m-2">
+                <label for="password">Password</label>
+                <input class="form-control" type="password" placeholder="Password" formControlName="password">
+                <div [hidden]="loginForm.get('password')?.valid || loginForm.get('password')?.pristine" class="invalid">
+                    A password is required
+                </div>
+            </div>
+            
+            <button class="btn btn-primary m-2" type="submit">Log In</button>
+        </form>
+        <div class="invalid" [hidden]="!this.error">{{error}}</div>
+    </div>
+    
+</div>

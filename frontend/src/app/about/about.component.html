@@ -1,0 +1,262 @@
+<h1>Casusbeschrijving</h1>
+<p>
+     
+
+Voor deze casus wil ik een applicatie schrijven die gebruikers in staat stelt om informatie op te vragen over verschillen spelcomputers en video-games, met name gericht op retro videogames. 
+
+In deze applicatie zal het mogelijk zijn voor een gebruiker mogelijk zijn om verscheidene consoles en games aan hun virtuele collective toe te voegen. Zij kunnen dan in een overzicht zien welke consoles en games zij in hun bezit hebben. Dit heeft als doel voorkomen dat verzamelaars objecten in hun verzameling dubbelkopen, omdat zij in winkels uiteraard geen fysieke toegang hebben om te zien of ze bijvoorbeeld een game of console al hebben.  
+
+Ze kunnen in deze applicatie ook zoeken naar games/consoles die ze nog niet hebben, met als doel dat ze meer informatie kunnen krijgen over deze game/console, zodat ze kunnen besluiten of ze deze game aan willen schaffen.
+</p>
+<h1>ERD</h1>
+<img src="../../assets/erd.png">
+<h1>Functionele Eisen</h1>
+<table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Requirement</th>
+      <th scope="col">Acceptatiecriteria</th>
+      <th scope="col">Prioriteit</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>F-01</td>
+            <td>Als gebruiker wil ik kunnen zien welke spelcomputers en games er allemaal bestaan</td>
+            <td>
+                <ul>
+                    <li>Er moet een lijst van spelcomputers weergegeven worden.</li>
+                    <li>Er moet een naam van de spelcomputer weergegeven worden</li>
+                    <li>Er moet een lijst van games weergegeven worden</li>
+                    <li>Er moet een naam van de game weergegeven worden</li>
+                </ul>
+            </td>
+            <td>MUST</td>
+        </tr>
+        <tr>
+            <td>F-02</td>
+            <td>Als gebruiker wil ik games en spelcomputers toe kunnen voegen aan mijn persoonlijke collectie.</td>
+            <td>
+                <ul>
+                    <li>Er moet een knop zijn om een spelcomputer toe te voegen aan de collectie</li>
+                    <li>Er moet een knop zijn om een game toe te voegen aan de collectie</li>
+                    <li>Er moet een invoerveld zijn om details over de collectie aan te geven. Dit zijn de staat van het product, de aanschafprijs, de regio van het product en e.v.t. voor welke spelcomputer de game bedoeld is</li>
+                </ul>
+            </td>
+            <td>MUST</td>
+        </tr>
+        <tr>
+            <td>F-03</td>
+            <td>Als gebruiker wil ik weten wat de grootste hits zijn op een spelcomputer of van een game ontwikkelaar.</td>
+            <td>
+                <ul>
+                    <li>Er zal een selectie aan beste games beschikbaar zijn op de detailpagina van een console of company op volgorde van reviewscore</li>
+                </ul>
+            </td>
+            <td>SHOULD</td>
+        </tr>
+        <tr>
+            <td>F-04</td>
+            <td>Als gebruiker wil ik de waarde weten van mijn collectie</td>
+            <td>
+                <ul>
+                    <li>Er zal een berekening worden gedaan om de marktwaarde van de collectie te berekenen en weer te geven op het profiel</li>
+                </ul>
+            </td>
+            <td>SHOULD</td>
+        </tr>
+        <tr>
+            <td>F-05</td>
+            <td>Als admin moet ik spelcomputers, games en bedrijven toe kunnen voegen aan de database</td>
+            <td>
+                <ul>
+                    <li>Er moet een scherm komen om een game, spelcomputer of bedrijf aan te maken</li>
+                    <li>Er moet een mogelijkheid zijn om een game aan een of meerdere spelcomputers/bedrijven te koppelen</li>
+                    <li>Er moet een mogelijkheid zijn om foutieve informatie achteraf aan te passen</li>
+                    <li>Er moet een mogelijkheid zijn om iets wat niet langer relevant is te verwijderen</li>
+                </ul> 
+            </td>
+            <td>MUST</td>
+        </tr>
+        <tr>
+            <td>F-06</td>
+            <td>Als admin wil ik gebruikers kunnen inzien en kunnen verwijderen</td>
+            <td>
+                <ul>
+                    <li>Er moet een overzicht van gebruikers zijn</li>
+                    <li>Er moet een knop zijn om een gebruiker te verwijderen</li>
+                </ul>
+            </td>
+            <td>WOULD</td>
+        </tr>
+    </tbody>
+  </table>
+  <h1>Queryoverzicht</h1>
+  <table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Doel</td>
+            <td>Query</td>
+            <td>Frequentie</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            Aanmaken van game
+        </tr>
+        <tr>
+            <td>Aanmaken game</td>
+            <td>CREATE (c:`Game`) SET c=$props RETURN properties(c) AS game</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Koppeling RELEASED_ON relatie bij aanmaken game</td>
+            <td>MATCH (g:Game), (c:Console) WHERE g.id = $gameId AND c.id = $consoleId CREATE (g)-[:RELEASED_ON]->(c) RETURN g</td>
+            <td>N keer</td>
+        </tr>
+        <tr>
+            <td>Koppeling DEVELOPED_BY relatie bij aanmaken game</td>
+            <td>MATCH (g:Game), (c:Company) WHERE g.id = $gameId AND c.id = $companyId CREATE (g)-[:DEVELOPED_BY]->(c) RETURN g</td>
+            <td>N keer</td>
+        </tr>
+        <tr>
+            <td>Aanbevelingen van games voor een user</td>
+            <td>CALL &#10100;
+                MATCH (game:Game)
+                WHERE game.id IN $ownedGameIds
+                MATCH (game)-[:DEVELOPED_BY]->(company:Company)&lt;-[:DEVELOPED_BY]-(similarGame:Game)-[:RELEASED_ON]->(similarConsole:Console)
+                WHERE similarConsole.id IN $consoleIds AND not similarGame.id IN $ownedGameIds
+                WITH similarGame, game, CASE WHEN similarGame.genre = game.genre THEN 0 else 1 END AS sameGenre
+                RETURN similarGame
+                ORDER BY sameGenre, similarGame.rating DESC
+                UNION
+                MATCH (game)-[:RELEASED_ON]->(console:Console)&lt;-[:RELEASED_ON]-(similarGame:Game) WHERE console.id IN $consoleIds AND not similarGame.id IN $ownedGameIds
+                WITH similarGame, game, CASE WHEN similarGame.genre = game.genre THEN 0 else 1 END AS sameGenre
+                RETURN similarGame
+                ORDER BY sameGenre, similarGame.rating DESC
+                &#10101;
+                RETURN similarGame
+                LIMIT 5</td>
+                <td>N keer</td>
+        </tr>
+        <tr>
+            <td>Zoek games gereleased op console</td>
+            <td>MATCH (g:Game), (c:Console)
+                WHERE g.id = '$gameId' AND c.id = '$consoleId'
+                CREATE (g)-[:RELEASED_ON]->(c)
+                RETURN g</td>
+                <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Vind alle games</td>
+            <td>MATCH (c:`Game`) RETURN properties(c) AS game</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Zoek games</td>
+            <td>MATCH (game:Game) WHERE game.name =~ "(?i).*" + $input + ".*" RETURN properties(game) as game</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Zoek 1 game op ID en haal gerelateerde entiteiten op</td>
+            <td>MATCH (console: Console)&lt;-[:RELEASED_ON]-(game:`Game`)-[:DEVELOPED_BY]->(company:Company) WHERE game.id=$id RETURN DISTINCT properties(game) AS game, properties(console) AS console, properties(company) as company</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Zoek 1 game op en update de properties</td>
+            <td>MATCH (game:Game &#10100;id: $input&#10101;) SET game=$props RETURN properties(game) AS game</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Verwijder alle DEVELOPED_BY relaties van de game die je update</td>
+            <td>MATCH (game:Game &#10100;id: $input&#10101;)-[c:DEVELOPED_BY]->() DELETE c</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Verwijder alle RELEASED_ON relaties van de game</td>
+            <td>MATCH (game:Game &#10100;id: $input&#10101;)-[co:RELEASED_ON]->() DELETE co</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Zoek bedrijven</td>
+            <td>MATCH (company:Company) WHERE company.name =~ "(?i).*" + $input + ".*" RETURN properties(company) as company</td>
+            <td>1 keer</td> 
+        </tr>
+        <tr>
+            <td>Retrieve de 5 beste games van 1 bedrijf</td>
+            <td>MATCH (company:Company)&lt;-[:DEVELOPED_BY]-(game:Game) WHERE company.id = $id
+                RETURN properties(game) AS game
+                ORDER BY game.rating DESC
+                LIMIT 5</td>
+                <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Zoek consoles</td>
+            <td>MATCH (console:Console) WHERE console.name =~ "(?i).*" + $input + ".*" RETURN properties(console) as console</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Retrieve de 5 beste games op 1 console</td>
+            <td>MATCH (console:Console)&lt;-[:RELEASED_ON]-(game:Game) WHERE console.id = $id
+                RETURN properties(game) AS game
+                ORDER BY game.rating DESC
+                LIMIT 5</td>
+                <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Maak een user</td>
+            <td>this.userModel.create(createUserDto)</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Retrieve een user met password_hash</td>
+            <td>this.userModel.findOne(&#10100;username: username&#10101;, &#10100;"__v": 0&#10101;).exec();</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Retrieve 1 user</td>
+            <td>this.userModel.findOne(&#10100;username: username&#10101;, &#10100;password_hash: 0, "__v": 0&#10101;).exec()</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Check if user exists</td>
+            <td>this.userModel.exists(&#10100;username: username&#10101;).exec();
+            </td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Retrieve alle users</td>
+            <td>this.userModel.find().exec();</td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Collect een console</td>
+            <td>this.userModel.updateOne(&#10100;username: username&#10101;, &#10100;$push: &#10100;"owned_consoles": collectedConsole&#10101;&#10101;)
+            </td>
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Collect een game</td>
+            <td>this.userModel.updateOne(&#10100;username: username&#10101;, &#10100;$push: &#10100;"owned_games": collectedGame&#10101;&#10101;)
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Uncollect een game</td>
+            <td>this.userModel.updateOne(&#10100;username: username&#10101;, &#10100;$pull: &#10100;"owned_games": collectedGame&#10101;&#10101;)
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>Uncollect een console</td>
+            <td>this.userModel.updateOne(&#10100;username: username&#10101;, &#10100;$pull: &#10100;"owned_consoles": collectedConsole&#10101;&#10101;)
+            <td>1 keer</td>
+        </tr>
+        <tr>
+            <td>
+                Verwijder een user
+            </td>
+            <td>return this.userModel.deleteOne(&#10100;username: username&#10101;)</td>
+            <td>1x</td>
+        </tr>
+    </tbody>
+  </table>

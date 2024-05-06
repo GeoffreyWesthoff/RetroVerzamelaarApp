@@ -1,0 +1,54 @@
+<div id="collectModal" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add {{ collectable?.name || "Unknown" }} to your collection?</h5>
+                <button type="button" class="close btn" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="collectForm" (ngSubmit)="collect()">
+                    <div class="form-group">
+                        <label for="collectableRegion">Region</label>
+                        <select class="form-control" id="collectableRegion" name="region" formControlName="region">
+                            <option>NTSC</option>
+                            <option>PAL</option>
+                            <option>NTSC-J</option>
+                        </select>
+                        <div class="invalid" [hidden]="this.collectForm.get('region')?.valid || this.collectForm.get('region')?.pristine">
+                            Please select a region
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="collectablePurchasePrice">Purchase Price</label>
+                        <input class="form-control" type="number" id="collectablePurchasePrice" name="purchase_price" formControlName="purchase_price">
+                        <div class="invalid" [hidden]="this.collectForm.get('purchase_price')?.valid || this.collectForm.get('purchase_price')?.pristine">
+                            Please enter how much you purchased the item for
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="collectableCondition">Condition</label>
+                        <input class="form-control" type="text" id="collectableCondition" name="condition" formControlName="condition">
+                        <div class="invalid" [hidden]="this.collectForm.get('condition')?.valid || this.collectForm.get('condition')?.pristine">
+                            Please enter the condition of the collectable
+                        </div>
+                      </div>
+                      <div *ngIf="this.type === 'game'" class="form-group">
+                        <label for="collectableCondition">For Console</label>
+                        <p-autoComplete formControlName="for_console" (completeMethod)="searchConsoles($event)" [required]="true" [suggestions]="consoles" field="name" type="text" id="gameReleasedOn" [forceSelection]="true" name="for_console"></p-autoComplete>
+                        <div class="invalid" [hidden]="this.collectForm.get('for_console')?.valid || this.collectForm.get('for_console')?.pristine">
+                            Please select the console you own this game for.
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="this.error">
+                {{this.error}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" (click)="close()" class="btn btn-secondary">Close</button>
+                <button (click)="collect()" type="button" class="btn btn-primary">Collect</button>
+            </div>
+        </div>
+    </div>

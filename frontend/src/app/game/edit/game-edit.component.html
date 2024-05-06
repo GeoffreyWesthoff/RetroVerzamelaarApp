@@ -1,0 +1,101 @@
+<form [formGroup]="gameForm" (ngSubmit)="onClickSubmit()">
+    <div class="form-group">
+      <label for="gameName">Name</label>
+      <input  class="form-control" type="text" id="gameName" name="name" formControlName="name" ngModel="{{game.name}}">
+      <div class="invalid" [hidden]="gameForm.get('name')?.pristine || gameForm.get('name')?.valid">
+        A name is required
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="gameReleaseDate">Release Date</label>
+      <div class="input-group">
+      <input class="form-control" type="date" name="release_date" id="gameReleaseDate" formControlName="release_date" ngModel="{{game.release_date}}">
+      <div class="invalid" [hidden]="gameForm.get('release_date')?.pristine || gameForm.get('release_date')?.valid">
+        A valid date must be selected
+      </div>  
+    </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="gameMarketPrice">Market Price</label>
+      <input  class="form-control" type="number" step="0.01" id="gameMarketPrice" formControlName="market_price" name="market_price" ngModel="{{game.market_price}}">
+      <div class="invalid" [hidden]="gameForm.get('market_price')?.pristine || gameForm.get('market_price')?.valid">
+        A market price is required
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="gameImageUrl">Image URL</label>
+      <input class="form-control" type="text" id="gameImageUrl" name="image_url" formControlName="image_url" ngModel="{{game.image_url}}">
+      <div class="invalid" [hidden]="gameForm.get('image_url')?.pristine || gameForm.get('image_url')?.valid">
+        A valid URL must be submitted
+      </div>
+      
+    </div>
+  
+    <div class="form-group">
+      <label for="gameMaxPlayers">Max Players</label>
+      <input  class="form-control" type="number" id="gameMaxPlayers" min="1" max="16" name="max_players" formControlName="max_players" ngModel="{{game.max_players}}">
+      <div class="invalid" [hidden]="gameForm.get('max_players')?.pristine || gameForm.get('max_players')?.valid">
+        A valid number between 1 and 16 must be entered
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="gameOnlineSupport">Online Play</label>
+      <input  class="form-control" type="text" id="gameOnlineSupport" name="online_support" formControlName="online_support" ngModel="{{game.online_support}}">
+      <div class="invalid" [hidden]="gameForm.get('online_support')?.pristine || gameForm.get('online_support')?.valid">
+        A value of either true or false must be entered
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="gameRating">Region</label>
+      <select class="form-control" id="gameRegion" name="region" formControlName="region" [(ngModel)]="game.region">
+        <option value="NTSC">NTSC</option>
+        <option value="NTSC-J">NTSC-J</option>
+        <option value="PAL">PAL</option>
+      </select>
+      <div class="invalid" [hidden]="gameForm.get('region')?.pristine || gameForm.get('region')?.valid">
+        A valid region is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="gameRating">Rating</label>
+      <input  class="form-control" type="number" max="10" min="1" id="gameRating" formControlName="rating" name="rating" ngModel="{{game.rating}}">
+      <div class="invalid" [hidden]="gameForm.get('rating')?.pristine || gameForm.get('rating')?.valid">
+        A valid rating between 1 and 10 is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="gameGenre">Genre</label>
+      <input  class="form-control" type="text" id="gameGenre" formControlName="genre" name="genre" ngModel="{{game.genre}}">
+      <div class="invalid" [hidden]="gameForm.get('genre')?.pristine || gameForm.get('genre')?.valid">
+        A genre is required
+      </div>
+    </div>
+
+    <div class="form-group">
+        <label for="gameReleasedOn">Released On</label>
+        <br>
+        <p-autoComplete [multiple]="true" formControlName="released_on" (completeMethod)="searchConsoles($event)" [suggestions]="consoles" field="name" type="text" id="gameReleasedOn" [forceSelection]="true" name="released_on" [(ngModel)]="selectedConsoles"></p-autoComplete>
+        <div class="invalid" [hidden]="gameForm.get('released_on')?.pristine || gameForm.get('released_on')?.valid">
+          A game must be released on at least one console
+        </div>
+      </div>
+    <div class="form-group">
+      <label for="gameDevelopedBy">Developed By</label>
+      <br>
+      <p-autoComplete [multiple]="true" formControlName="developed_by" (completeMethod)="searchCompanies($event)" [suggestions]="companies" field="name" type="text" id="gameDevelopedBy" [forceSelection]="true" name="developed_by" [(ngModel)]="selectedCompanies"></p-autoComplete>
+      <div class="invalid" [hidden]="gameForm.get('developed_by')?.pristine || gameForm.get('developed_by')?.valid">
+        A game must be developed by at least one company
+      </div>
+    </div>
+
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  

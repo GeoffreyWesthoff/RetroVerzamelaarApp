@@ -1,0 +1,29 @@
+<div class="container">
+  <div>
+    <h1>Consoles <button *ngIf="this.authService.isAdmin()" [routerLink]="['/console', 'create']" class="btn btn-primary">Create New</button></h1>
+    <label for="search" class="form-label">Search</label>
+    <input class="form-control" name="search" #searchBox type="text" (input)="search()" placeholder="Xbox">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Release Date</th>
+        <th *ngIf="this.authService.isUserLoggedIn()" scope="col">Options</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let console of consoles">
+        <td><a [routerLink]="['/console', console.id]">{{console.name}}</a></td>
+        <td>{{console.release_date}}</td>
+        <td *ngIf="this.authService.isUserLoggedIn()" class="m-1 p-1">
+          <button *ngIf="this.authService.isAdmin()" type="button" class="btn btn-danger m-2" title="delete console"
+                  (click)="delete(console)">Delete</button>
+          <a *ngIf="this.authService.isAdmin()" [routerLink]="['/console', console.id, 'edit']" type="button" class="btn btn-warning m-2">Edit</a>
+          <a (click)="open(console)" type="button" class="btn btn-primary m-2">Collect</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<app-collect-modal #collectModal></app-collect-modal>

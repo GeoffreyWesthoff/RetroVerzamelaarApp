@@ -1,0 +1,32 @@
+<div class="container mx-auto">
+    <h1>Console</h1>
+    <div class="card mx-auto" style="max-width: 200px;">
+        <img class="card-img-top img-fluid p-4" style="object-fit: contain; width: 100%; height: 100%;" src="{{ c.image_url }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ c.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ formatDate(c.release_date) }}</h6>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Market Price: ${{ c.market_price}}</li>
+                    <li class="list-group-item">Maximum Controllers Supported: {{ c.max_controllers }}</li>
+                    <li class="list-group-item">Online Connectivity Support: {{ c.online_capable === 'true' ? "Yes" : "No" }} </li>
+                </ul>
+                <a (click)="open(c)" type="button" class="btn btn-primary m-2">Collect</a>
+            </div>
+    </div>
+    <h2 class="mx-auto">Best Games</h2>
+    <div class="d-flex flex-row">
+        <div *ngFor="let game of bestGames" class="card mx-auto m-4" style="max-width: 200px; cursor:pointer">
+            <img class="card-img-top img-fluid" src="{{ game.image_url }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ game.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ formatDate(game.release_date) }}</h6>
+                
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <a [routerLink]="['/game', game.id]" class="card-link btn btn-primary m-2">View Details</a>
+                    <a (click)="openGame(game)" class="card-link btn btn-success" style="margin-left: 0">Collect</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-collect-modal #collectModal></app-collect-modal>

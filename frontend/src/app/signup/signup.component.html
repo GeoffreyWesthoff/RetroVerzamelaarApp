@@ -1,0 +1,34 @@
+<div class="container mx-auto d-flex flex-col justify-content-center align-items-center">
+    <div>
+        <h1>Sign Up</h1>
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div class="form-group m-2">
+                <label class="" for="username">Username</label>
+                <input class="form-control" type="text" placeholder="Username" required="" formControlName="username">
+                <div [hidden]="signupForm.get('username')?.valid || signupForm.get('username')?.pristine" class="invalid">
+                    Please choose a Username
+                </div>
+            </div>
+            <div class="form-group m-2">
+                <label for="password">Password</label>
+                <input class="form-control" type="password" placeholder="Password" required="" minlength="8" maxlength="64" formControlName="password">
+                <div [hidden]="signupForm.get('password')?.valid || signupForm.get('password')?.pristine" class="invalid">
+                    A password between 8 and 64 characters must be chosen!
+                </div>
+            </div>
+            <div class="form-group m-2">
+                <label for="password">Confirm Password</label>
+                <input class="form-control" type="password" placeholder="Password" required="" minlength="8" maxlength="64" formControlName="password_confirm">
+                <div [hidden]="signupForm.get('password_confirm')?.valid || signupForm.get('password_confirm')?.pristine" class="invalid">
+                    A password between 8 and 64 characters must be chosen!
+                </div>
+            </div>
+            <div *ngIf="signupForm.errors" class="invalid">
+                Passwords must match
+            </div>
+            <button class="btn btn-primary m-2" type="submit">Sign Up</button>
+        </form>
+        <div class="invalid" [hidden]="!this.error">{{error}}</div>
+    </div>
+    
+</div>

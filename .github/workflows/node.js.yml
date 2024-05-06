@@ -1,0 +1,69 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Test and Deploy API
+env:
+  VERCEL_ORG_ID: ${{secrets.VERCEL_ORG_ID}}
+  
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+    env: 
+      JWT_SECRET: ${{secrets.JWT_SECRET}}
+      DB_NAME: "retroTest"
+      MONGO_URI: ${{secrets.MONGO_URI}}
+      NEO4J_USER: neo4j
+      NEO4J_URI: ${{secrets.NEO4J_URI}}
+      NEO4J_PASSWORD: ${{secrets.NEO4J_PASSWORD}}
+    strategy:
+      matrix:
+        node-version: [20.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm i
+    - run: npx jest -c apps/server/jest.config.ts
+  deploy-api:
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+      VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Env Info
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
+      - name: Deploy Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}}
+  deploy-spa:
+    runs-on: ubuntu-latest
+    needs: deploy-api
+    env:
+      VERCEL_PROJECT_ID: ${{secrets.VERCEL_PROJECT_ID_SPA}}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Env Info
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{secrets.VERCEL_TOKEN}}
+      - name: Deploy Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{secrets.VERCEL_TOKEN}}

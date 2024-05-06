@@ -1,0 +1,47 @@
+<form [formGroup]="companyForm" (ngSubmit)="onClickSubmit()">
+    <div class="form-group">
+      <label for="consoleName">Name</label>
+      <input class="form-control" type="text" id="companyName" name="name" formControlName="name" [(ngModel)]="company.name">
+      <div class="invalid" [hidden]="companyForm.get('name')?.pristine || companyForm.get('name')?.valid">
+        A name is required
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="companyEstablishmentYear">Establishment Date</label>
+      <div class="input-group">
+      <input class="form-control" type="date" name="establishment_year" id="companyEstablishmentYear" formControlName="establishment_year" [(ngModel)]="company.establishment_year">
+      <div class="invalid" [hidden]="companyForm.get('establishment_year')?.pristine || companyForm.get('establishment_year')?.valid">
+        A valid date must be selected
+      </div>  
+    </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="companyAnnualRevenue">Annual Revenue</label>
+      <input class="form-control" type="text" id="companyAnnualRevenue" name="annual_revenue" formControlName="annual_revenue" [(ngModel)]="company.annual_revenue">
+      <div class="invalid" [hidden]="companyForm.get('annual_revenue')?.pristine || companyForm.get('annual_revenue')?.valid">
+        A valid number must be entered
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="companyImageUrl">Image URL</label>
+      <input class="form-control" type="text" id="companyImageUrl" name="image_url" formControlName="image_url" [(ngModel)]="company.image_url">
+      <div class="invalid" [hidden]="companyForm.get('image_url')?.pristine || companyForm.get('image_url')?.valid">
+        A valid URL must be submitted
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="companyCountry">Country</label>
+      <input class="form-control" type="text" id="companyCountry" name="country" formControlName="country" [(ngModel)]="company.country">
+      <div class="invalid" [hidden]="companyForm.get('country')?.pristine || companyForm.get('country')?.valid">
+        Country is a required field
+      </div>
+    </div>
+  
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  

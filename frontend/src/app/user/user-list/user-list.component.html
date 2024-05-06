@@ -1,0 +1,25 @@
+<div class="container">
+    <div>
+      <h1>Users</h1>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th *ngIf="this.authService.isUserLoggedIn()" scope="col">Options</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+          <td><a [routerLink]="['/user', user.username]">{{user.username}}</a></td>
+          <td *ngIf="this.authService.isUserLoggedIn()" class="m-1 p-1">
+            <button *ngIf="this.authService.isAdmin()" type="button" class="btn btn-danger m-2" title="delete user"
+                    (click)="delete(user)">Delete</button>
+            <a *ngIf="this.authService.isAdmin()" [routerLink]="['/user', user.username, 'edit']" type="button" class="btn btn-warning m-2">Edit</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <app-collect-modal #collectModal></app-collect-modal>
+  

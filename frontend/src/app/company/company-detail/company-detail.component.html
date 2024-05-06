@@ -1,0 +1,32 @@
+<div class="container mx-auto">
+    <div class="d-flex flex-row align-items-start justify-content-center mx-4">
+        <div class="col mx-auto">
+            <h2 class="m-4 mx-auto">Company</h2>
+            <div class="card m-4 mx-auto" style="max-width: 200px;">
+                <img class="card-img-top img-fluid p-4" style="width: 100%; height: 100%; object-fit: contain;" src="{{ company.image_url }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ company.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">{{ company.establishment_year }}</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Annual Revenue: {{ company.annual_revenue != -1 ? '$' + company.annual_revenue : 'Unknown' }}</li>
+                        <li class="list-group-item">Country: {{ company.country}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <h2 class="mx-auto">Best Games</h2>
+    <div class="d-flex flex-row">
+        <div *ngFor="let game of bestGames" class="card mx-auto m-4" style="max-width: 200px;">
+            <img class="card-img-top img-fluid" src="{{ game.image_url }}">
+            <div class="card-body">
+                <h5 class="card-title">{{ game.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ game.release_date }}</h6>
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
